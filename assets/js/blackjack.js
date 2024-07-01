@@ -12,7 +12,9 @@
 const btnPedir = document.querySelector("#btn-pedir");
 const btnNuevo = document.querySelector("#btn-nuevo");
 const btnDetener = document.querySelector("#btn-detener");
-let score = document.querySelector('small');
+let score = document.querySelectorAll("small");
+const divCartaJugador = document.querySelector("#jugador-carta");
+const divCartaComputadora = document.querySelector("#computador-carta");
 
 // Variables
 let valorJugador = 0, valorComputador = 0;
@@ -78,6 +80,37 @@ const valorCarta = (carta) => {
    
 };
 
+// Turno de la computadora
+
+const turnoComputador = (puntosMinimos)=>{
+
+    do {
+    const carta = getCard();
+    valor = valorCarta(carta);
+    valorComputador = valorComputador + valor;
+    score[1].innerText = valorComputador;
+
+    const imgCarta = document.createElement('img');
+    imgCarta.src = `assets/cartas/${carta}.png`;
+    imgCarta.classList.add('carta');
+    divCartaComputadora.append(imgCarta);
+
+    if(puntosMinimos > 21){
+        break;
+    }
+    } while ( (valorComputador < puntosMinimos) && (puntosMinimos <= 21))
+     setTimeout(() => {
+        if(puntosMinimos == valorComputador ){
+        alert(" Nadie Gana");
+    }else if(puntosMinimos > 21){
+        alert(" Perdió ej Juagador");
+    } else if(valorComputador > 21)
+        alert("Usuario gana!!!")
+     }, 100);
+    
+
+}
+
 
 
 // Eventos
@@ -86,6 +119,34 @@ btnPedir.addEventListener('click',()=>{
     const carta = getCard();
     valor = valorCarta(carta);
     valorJugador = valorJugador + valor;
-    score.innerText = valorJugador;
+    score[0].innerText = valorJugador;
+
+    const imgCarta = document.createElement('img');
+    imgCarta.src = `assets/cartas/${carta}.png`;
+    imgCarta.classList.add('carta');
+    divCartaJugador.append(imgCarta);
+
+    if(valorJugador > 21){
+        console.warn("Perdiste");
+        btnPedir.disabled = true;
+        btnDetener.disabled = true;
+        turnoComputador(valorJugador);
+    } else if(valorJugador == 21){
+        console.info("Ganaste");
+        btnPedir.disabled = true;
+        btnDetener.disabled = true;
+    }
 
 })
+
+btnDetener.addEventListener('click',()=>{
+    btnPedir.disabled = true;
+    btnDetener.disabled = true;
+    turnoComputador(valorJugador);
+})
+
+btnNuevo.addEventListener('click',()=>{
+    location.reload();
+})
+
+
